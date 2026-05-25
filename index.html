@@ -38,7 +38,7 @@
     }
 
     /* ─── 배경 스티커 & 와시 테이프 ─────────────────────── */
-    .bg-deco { position: fixed; pointer-events: none; user-select: none; z-index: 1; }
+    .bg-deco { position: fixed; pointer-events: none; user-select: none; z-index: 1; font-size: 20px; }
 
     .bg-washi {
       position: fixed; pointer-events: none; z-index: 1;
@@ -386,19 +386,18 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* 코너 스티커 */
-    .corner { position: absolute; pointer-events: none; z-index: 31; font-size: 14px; }
+    .corner { position: absolute; pointer-events: none; z-index: 31; font-size: 20px; }
   </style>
 </head>
 <body>
 
   <!-- ───────── 배경 스티커 ───────── -->
-  <span class="bg-deco" style="top:7%;left:4%;font-size:24px;transform:rotate(-18deg);">🌸</span>
-  <span class="bg-deco" style="top:11%;right:5%;font-size:19px;transform:rotate(12deg);">⭐</span>
-  <span class="bg-deco" style="top:40%;left:3%;font-size:15px;transform:rotate(6deg);">🎀</span>
-  <span class="bg-deco" style="top:55%;right:3%;font-size:16px;transform:rotate(-14deg);">💐</span>
-  <span class="bg-deco" style="bottom:22%;left:5%;font-size:21px;transform:rotate(-8deg);">🌿</span>
-  <span class="bg-deco" style="bottom:14%;right:6%;font-size:16px;transform:rotate(22deg);">✨</span>
-  <span class="bg-deco" style="bottom:8%;left:30%;font-size:13px;transform:rotate(-5deg);">🌼</span>
+  <span class="bg-deco" style="top:7%;left:4%;transform:rotate(-18deg);">🫧</span>
+  <span class="bg-deco" style="top:11%;right:5%;transform:rotate(12deg);">⭐</span>
+  <span class="bg-deco" style="top:40%;left:3%;transform:rotate(6deg);">🎀</span>
+  <span class="bg-deco" style="bottom:22%;left:5%;transform:rotate(-8deg);">🌿</span>
+  <span class="bg-deco" style="bottom:14%;right:6%;transform:rotate(22deg);">✨</span>
+  <span class="bg-deco" style="bottom:8%;left:30%;transform:rotate(-5deg);">🌼</span>
 
   <!-- 배경 와시 테이프 -->
   <div class="bg-washi" style="top:4%;left:46%;width:45px;height:12px;background:rgba(255,175,175,0.55);transform:rotate(-4deg);"></div>
@@ -421,7 +420,6 @@
 
         <!-- 코너 장식 -->
         <div class="corner" style="top:8px;right:10px;">🌸</div>
-        <div class="corner" style="bottom:12px;right:8px;">✿</div>
 
         <div class="page-container">
 
@@ -537,7 +535,7 @@
     <!-- 내비게이션 버튼 -->
     <div class="nav-area">
       <button class="nav-btn" id="prevBtn" onclick="changePage(-1)" disabled>← 이전</button>
-      <button class="nav-btn" id="nextBtn" onclick="changePage(1)">다음 →</button>
+      <button class="nav-btn" id="nextBtn" onclick="handleNextClick()">다음 →</button>
     </div>
   </div><!-- /scene -->
 
@@ -560,16 +558,15 @@
     const TOTAL = 11;
     let busy = false;
 
-    function changePage(dir) {
+    function navigateTo(next) {
       if (busy) return;
-      const next = cur + dir;
-      if (next < 0 || next >= TOTAL) return;
+      if (next < 0 || next >= TOTAL || next === cur) return;
 
+      const dir = next > cur ? 1 : -1;
       busy = true;
       const $cur  = document.getElementById('page-' + cur);
       const $next = document.getElementById('page-' + next);
 
-      /* 다음 페이지 초기 위치 */
       $next.style.transition = 'none';
       $next.style.opacity    = '0';
       $next.style.transform  = `translateX(${dir > 0 ? 32 : -32}px)`;
@@ -595,9 +592,20 @@
       }, 440);
     }
 
+    function changePage(dir) {
+      navigateTo(cur + dir);
+    }
+
+    function handleNextClick() {
+      if (cur === TOTAL - 1) navigateTo(0);
+      else changePage(1);
+    }
+
     function updateUI() {
       document.getElementById('prevBtn').disabled = cur === 0;
-      document.getElementById('nextBtn').disabled = cur === TOTAL - 1;
+      const nextBtn = document.getElementById('nextBtn');
+      nextBtn.disabled = false;
+      nextBtn.textContent = cur === TOTAL - 1 ? '처음으로 ↑' : '다음 →';
       document.querySelectorAll('.dot').forEach((d, i) =>
         d.classList.toggle('active', i === cur));
     }
