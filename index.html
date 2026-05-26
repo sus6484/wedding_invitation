@@ -15,30 +15,56 @@
       touch-action: none;
     }
 
-    /* ─── 기어링엄(Gingham) 배경 ─────────────────────────── */
+    /* ─── 세이지 깅엄 + 핑크 별 배경 (CSS 생성) ───────── */
     body {
+      --gingham-size: 42px;
+      --sage-rgb: 158, 176, 146;
       font-family: 'Noto Sans KR', sans-serif;
-      background-color: #d6edce;
+      background-color: #faf8f4;
       background-image:
-        repeating-linear-gradient(
-          0deg,
-          rgba(100, 170, 100, 0.22) 0px, rgba(100, 170, 100, 0.22) 22px,
-          transparent 22px, transparent 44px
-        ),
-        repeating-linear-gradient(
+        linear-gradient(
           90deg,
-          rgba(100, 170, 100, 0.22) 0px, rgba(100, 170, 100, 0.22) 22px,
-          transparent 22px, transparent 44px
+          rgba(var(--sage-rgb), 0.36) 50%,
+          transparent 50%
+        ),
+        linear-gradient(
+          rgba(var(--sage-rgb), 0.36) 50%,
+          transparent 50%
         );
+      background-size: var(--gingham-size) var(--gingham-size);
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
       position: relative;
+      isolation: isolate;
     }
 
-    /* ─── 배경 스티커 ───────────────────────────────────── */
-    .bg-deco { position: fixed; pointer-events: none; user-select: none; z-index: 1; font-size: 20px; }
+    /* 대각선·회전으로 흩뿌린 파스텔 핑크 별 */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='292' height='318' viewBox='0 0 292 318'%3E%3Cg transform='translate(44 86) rotate(-24)'%3E%3Cpath fill='%23eab5c1' fill-opacity='0.9' d='M0-5.2l1.45 4.4 4.6.65-3.35 3.25.8 4.55-4.05-2.15-4.05 2.15.8-4.55-3.35-3.25 4.6-.65z'/%3E%3C/g%3E%3Cg transform='translate(178 38) rotate(32) scale(0.86)'%3E%3Cpath fill='%23eab5c1' fill-opacity='0.78' d='M0-5.2l1.45 4.4 4.6.65-3.35 3.25.8 4.55-4.05-2.15-4.05 2.15.8-4.55-3.35-3.25 4.6-.65z'/%3E%3C/g%3E%3Cg transform='translate(236 152) rotate(-11)'%3E%3Cpath fill='%23eab5c1' fill-opacity='0.85' d='M0-5.2l1.45 4.4 4.6.65-3.35 3.25.8 4.55-4.05-2.15-4.05 2.15.8-4.55-3.35-3.25 4.6-.65z'/%3E%3C/g%3E%3Cg transform='translate(98 228) rotate(17)'%3E%3Cpath fill='%23eab5c1' fill-opacity='0.88' d='M0-5.2l1.45 4.4 4.6.65-3.35 3.25.8 4.55-4.05-2.15-4.05 2.15.8-4.55-3.35-3.25 4.6-.65z'/%3E%3C/g%3E%3Cg transform='translate(24 262) rotate(-19) scale(0.92)'%3E%3Cpath fill='%23eab5c1' fill-opacity='0.8' d='M0-5.2l1.45 4.4 4.6.65-3.35 3.25.8 4.55-4.05-2.15-4.05 2.15.8-4.55-3.35-3.25 4.6-.65z'/%3E%3C/g%3E%3C/svg%3E"),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='248' height='274' viewBox='0 0 248 274'%3E%3Cg transform='translate(132 118) rotate(21)'%3E%3Cpath fill='%23eab5c1' fill-opacity='0.82' d='M0-5.2l1.45 4.4 4.6.65-3.35 3.25.8 4.55-4.05-2.15-4.05 2.15.8-4.55-3.35-3.25 4.6-.65z'/%3E%3C/g%3E%3Cg transform='translate(208 208) rotate(-27)'%3E%3Cpath fill='%23eab5c1' fill-opacity='0.86' d='M0-5.2l1.45 4.4 4.6.65-3.35 3.25.8 4.55-4.05-2.15-4.05 2.15.8-4.55-3.35-3.25 4.6-.65z'/%3E%3C/g%3E%3Cg transform='translate(62 34) rotate(14) scale(0.9)'%3E%3Cpath fill='%23eab5c1' fill-opacity='0.75' d='M0-5.2l1.45 4.4 4.6.65-3.35 3.25.8 4.55-4.05-2.15-4.05 2.15.8-4.55-3.35-3.25 4.6-.65z'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: 292px 318px, 248px 274px;
+      background-position: 0 0, 74px 96px;
+    }
+
+    /* 종이 질감 노이즈 */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.055;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
 
     /* ─── 씬 전체 래퍼 ───────────────────────────────────── */
     .scene {
@@ -46,14 +72,19 @@
       display: flex; flex-direction: column;
       align-items: center;
       z-index: 10;
+      width: 100%;
+      max-width: 100%;
+      padding: 0 max(14px, 3.5vw);
+      box-sizing: border-box;
     }
 
     /* ─── 다이어리 래퍼 (기울기) ─────────────────────────── */
     .diary-wrapper {
       transform: rotate(-3.5deg);
       position: relative;
-      /* 링 너비만큼 왼쪽 공간 확보 */
+      /* 링·인덱스 탭이 잘리지 않도록 좌우 여유 */
       margin-left: 28px;
+      margin-right: 20px;
     }
 
     /* ─── 실버 링 제본 ───────────────────────────────────── */
@@ -107,8 +138,8 @@
     /* ─── 다이어리 본체 ──────────────────────────────────── */
     .diary {
       position: relative;
-      width: min(84vw, 328px);
-      height: min(74vh, 488px);
+      width: min(78vw, 300px);
+      height: min(68vh, 448px);
       background: #fffef9;
       border-radius: 3px 12px 12px 3px;
 
@@ -123,7 +154,7 @@
         -2px 2px 8px rgba(0,0,0,0.08);
 
       display: flex; flex-direction: column;
-      overflow: hidden;
+      overflow: visible;
       padding: 20px 18px 14px 24px;
     }
 
@@ -154,20 +185,6 @@
       transform: translateX(-50%) rotate(-2deg);
       width: 96px; height: 24px;
       background: rgba(255, 205, 180, 0.75);
-    }
-
-    .tape-tr {
-      top: 18px; right: -6px;
-      width: 46px; height: 13px;
-      background: rgba(170, 210, 255, 0.72);
-      transform: rotate(38deg);
-    }
-
-    .tape-bl {
-      bottom: 30px; left: -4px;
-      width: 40px; height: 12px;
-      background: rgba(220, 180, 255, 0.65);
-      transform: rotate(-30deg);
     }
 
     /* 마스킹 테이프 내부 줄 질감 */
@@ -273,26 +290,6 @@
       width: 82%;
     }
 
-    /* 폴라로이드 위 마스킹 테이프 */
-    .polaroid-tape {
-      position: absolute;
-      top: -9px; left: 50%;
-      transform: translateX(-50%) rotate(-3deg);
-      width: 56px; height: 16px;
-      background: rgba(255, 230, 150, 0.78);
-      border-radius: 2px;
-      z-index: 5;
-    }
-    .polaroid-tape::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: repeating-linear-gradient(
-        90deg, rgba(255,255,255,0.3) 0px, rgba(255,255,255,0.3) 2px,
-        transparent 2px, transparent 5px
-      );
-      border-radius: inherit;
-    }
-
     /* 사진 영역 (정사각보다 살짝 긴 비율) */
     .polaroid-img {
       width: 100%; aspect-ratio: 4 / 5;
@@ -376,19 +373,13 @@
     .nav-btn:not(:disabled):active { background: #e0f0dc; transform: translateY(-1px); }
     .nav-btn:disabled { opacity: 0.38; cursor: not-allowed; }
 
-    /* ─── 배경 스티커 보조 스타일 ────────────────────────── */
-    .emoji-spin { animation: spin 8s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* 코너 스티커 */
-    .corner { position: absolute; pointer-events: none; z-index: 31; font-size: 20px; }
-
     /* ─── 오른쪽 하단 인덱스 탭 ─────────────────────────── */
     .diary-index-tab {
       position: absolute;
-      right: 0;
-      bottom: 42px;
-      transform: translateX(calc(100% + 8px));
+      left: 100%;
+      right: auto;
+      bottom: 48px;
+      transform: none;
       width: 24px;
       height: 56px;
       z-index: 32;
@@ -467,38 +458,18 @@
 </head>
 <body>
 
-  <!-- ───────── 배경 스티커 ───────── -->
-  <span class="bg-deco" style="top:7%;left:4%;transform:rotate(-18deg);">🫧</span>
-  <span class="bg-deco" style="top:4%;right:6%;transform:rotate(12deg);">❤️</span>
-  <span class="bg-deco" style="top:40%;left:3%;transform:rotate(6deg);">🎀</span>
-  <span class="bg-deco" style="bottom:22%;left:5%;transform:rotate(-8deg);">🌿</span>
-  <span class="bg-deco" style="bottom:14%;right:6%;transform:rotate(22deg);">✨</span>
-  <span class="bg-deco" style="bottom:8%;left:30%;transform:rotate(-5deg);">🌼</span>
-
   <!-- ───────── 메인 씬 ───────── -->
   <div class="scene">
     <div class="diary-wrapper">
 
       <!-- 다이어리 마스킹 테이프 데코 -->
       <div class="diary-tape tape-top"></div>
-      <div class="diary-tape tape-tr"></div>
-      <div class="diary-tape tape-bl"></div>
 
       <!-- 링 제본 -->
       <div class="rings" id="rings"></div>
 
-      <!-- 오른쪽 하단 인덱스 탭 -->
-      <div class="diary-index-tab" aria-hidden="true">
-        <svg class="diary-index-tab__icon" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 2.2l2.35 4.76 5.26.77-3.8 3.7.9 5.24L12 14.9l-4.71 2.77.9-5.24-3.8-3.7 5.26-.77L12 2.2z"/>
-        </svg>
-      </div>
-
       <!-- 다이어리 본체 -->
       <div class="diary" id="diary">
-
-        <!-- 코너 장식 -->
-        <div class="corner" style="top:8px;right:10px;">🌸</div>
 
         <div class="page-container">
 
@@ -520,7 +491,6 @@
           <div class="page page-photo" id="page-2">
             <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
-              <div class="polaroid-tape"></div>
               <div class="polaroid-img">
                 <img src="gallery/03.jpg" alt="추억 사진 1">
               </div>
@@ -529,7 +499,6 @@
           <div class="page page-photo" id="page-3">
             <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
-              <div class="polaroid-tape"></div>
               <div class="polaroid-img">
                 <img src="gallery/04.jpg" alt="추억 사진 2">
               </div>
@@ -538,7 +507,6 @@
           <div class="page page-photo" id="page-4">
             <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
-              <div class="polaroid-tape"></div>
               <div class="polaroid-img">
                 <img src="gallery/05.jpg" alt="추억 사진 3">
               </div>
@@ -547,7 +515,6 @@
           <div class="page page-photo" id="page-5">
             <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
-              <div class="polaroid-tape"></div>
               <div class="polaroid-img">
                 <img src="gallery/06.jpg" alt="추억 사진 4">
               </div>
@@ -556,7 +523,6 @@
           <div class="page page-photo" id="page-6">
             <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
-              <div class="polaroid-tape"></div>
               <div class="polaroid-img">
                 <img src="gallery/07.jpg" alt="추억 사진 5">
               </div>
@@ -565,7 +531,6 @@
           <div class="page page-photo" id="page-7">
             <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
-              <div class="polaroid-tape"></div>
               <div class="polaroid-img">
                 <img src="gallery/08.jpg" alt="추억 사진 6">
               </div>
@@ -574,7 +539,6 @@
           <div class="page page-photo" id="page-8">
             <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
-              <div class="polaroid-tape"></div>
               <div class="polaroid-img">
                 <img src="gallery/09.jpg" alt="추억 사진 7">
               </div>
@@ -583,7 +547,6 @@
           <div class="page page-photo" id="page-9">
             <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
-              <div class="polaroid-tape"></div>
               <div class="polaroid-img">
                 <img src="gallery/10.jpg" alt="추억 사진 8">
               </div>
@@ -592,7 +555,6 @@
           <div class="page page-photo" id="page-10">
             <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
-              <div class="polaroid-tape"></div>
               <div class="polaroid-img">
                 <img src="gallery/11.jpg" alt="추억 사진 9">
               </div>
@@ -614,6 +576,13 @@
           <div class="dot"></div>
           <div class="dot"></div>
           <div class="dot"></div>
+        </div>
+
+        <!-- 오른쪽 하단 인덱스 탭 (공책 가장자리) -->
+        <div class="diary-index-tab" aria-hidden="true">
+          <svg class="diary-index-tab__icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
         </div>
 
       </div><!-- /diary -->
