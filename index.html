@@ -173,30 +173,42 @@
       );
     }
 
-    /* ─── 다이어리 위 마스킹 테이프 ─────────────────────── */
-    .diary-tape {
-      position: absolute;
-      z-index: 30; pointer-events: none;
-      border-radius: 2px;
-    }
-
-    .tape-top {
-      top: -12px; left: 50%;
-      transform: translateX(-50%) rotate(-2deg);
-      width: 96px; height: 24px;
-      background: rgba(255, 205, 180, 0.75);
-    }
-
-    /* 마스킹 테이프 내부 줄 질감 */
-    .diary-tape::after {
+    /* ─── 폴라로이드 위 마스킹 테이프 (3~11페이지) ───────── */
+    .polaroid::before {
       content: '';
-      position: absolute; inset: 0;
+      position: absolute;
+      z-index: 5;
+      pointer-events: none;
+      top: -6px;
+      left: 47%;
+      width: 54px;
+      height: 13px;
+      border-radius: 2px;
+      background: rgba(255, 205, 180, 0.78);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+      transform: translateX(-50%) rotate(-11deg) skewX(2.5deg);
+      transform-origin: center center;
+    }
+
+    .polaroid::after {
+      content: '';
+      position: absolute;
+      z-index: 6;
+      pointer-events: none;
+      top: -6px;
+      left: 47%;
+      width: 54px;
+      height: 13px;
+      border-radius: 2px;
       background: repeating-linear-gradient(
         90deg,
-        rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 2px,
-        transparent 2px, transparent 5px
+        rgba(255, 255, 255, 0.25) 0px,
+        rgba(255, 255, 255, 0.25) 2px,
+        transparent 2px,
+        transparent 5px
       );
-      border-radius: inherit;
+      transform: translateX(-50%) rotate(-11deg) skewX(2.5deg);
+      transform-origin: center center;
     }
 
     /* ─── 페이지 컨테이너 ────────────────────────────────── */
@@ -461,9 +473,6 @@
   <!-- ───────── 메인 씬 ───────── -->
   <div class="scene">
     <div class="diary-wrapper">
-
-      <!-- 다이어리 마스킹 테이프 데코 -->
-      <div class="diary-tape tape-top"></div>
 
       <!-- 링 제본 -->
       <div class="rings" id="rings"></div>
