@@ -138,8 +138,8 @@
     /* ─── 다이어리 본체 ──────────────────────────────────── */
     .diary {
       position: relative;
-      width: min(78vw, 300px);
-      height: min(68vh, 448px);
+      width: min(84vw, 330px);
+      height: min(72vh, 490px);
       background: #fffef9;
       border-radius: 3px 12px 12px 3px;
 
@@ -385,12 +385,12 @@
     .nav-btn:not(:disabled):active { background: #e0f0dc; transform: translateY(-1px); }
     .nav-btn:disabled { opacity: 0.38; cursor: not-allowed; }
 
-    /* ─── 오른쪽 하단 인덱스 탭 ─────────────────────────── */
+    /* ─── 오른쪽 상단 인덱스 탭 ─────────────────────────── */
     .diary-index-tab {
       position: absolute;
       left: 100%;
       right: auto;
-      bottom: 48px;
+      top: 48px;
       transform: none;
       width: 24px;
       height: 56px;
@@ -587,7 +587,7 @@
           <div class="dot"></div>
         </div>
 
-        <!-- 오른쪽 하단 인덱스 탭 (공책 가장자리) -->
+        <!-- 오른쪽 상단 인덱스 탭 (공책 가장자리) -->
         <div class="diary-index-tab" aria-hidden="true">
           <svg class="diary-index-tab__icon" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
