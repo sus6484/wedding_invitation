@@ -268,9 +268,19 @@
 
     /* ─── PAGE 3: 사진 ───────────────────────────────────── */
     .page-photo {
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
-      padding-top: 0;
+      padding-top: 46px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .page-photo .polaroid {
+      margin-top: 10px;
+    }
+
+    .page-photo.active {
+      touch-action: pan-y;
     }
 
     .page-photo .page-eyebrow {
@@ -283,11 +293,13 @@
     /* 폴라로이드 프레임 */
     .polaroid {
       background: #fff;
-      padding: 9px 9px 44px;
+      padding: 9px 9px 12px;
       box-shadow: 2px 4px 14px rgba(0,0,0,0.18);
       transform: rotate(1.8deg);
       position: relative;
       width: 82%;
+      flex-shrink: 0;
+      margin-bottom: 8px;
     }
 
     /* 사진 영역 (정사각보다 살짝 긴 비율) */
@@ -307,6 +319,163 @@
       text-align: center; font-size: 10px; color: #999;
       margin-top: 5px; font-family: 'Nanum Myeongjo', serif;
     }
+
+    /* ─── 갤러리 반응 · 댓글 ─────────────────────────────── */
+    .gallery-social {
+      margin-top: 6px;
+      padding: 0 2px;
+      touch-action: manipulation;
+    }
+
+    .gallery-social__actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .gallery-react {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 5px 11px;
+      line-height: 1;
+      background: rgba(248, 246, 240, 0.85);
+      border: 1px solid #dce6d8;
+      border-radius: 16px;
+      cursor: pointer;
+      font-family: inherit;
+      color: #8a9e8a;
+      transition: background .15s, transform .12s, border-color .15s, color .15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .gallery-react:active { transform: scale(0.94); }
+
+    .gallery-react.is-on {
+      background: #eef4ea;
+      border-color: #c4d4bc;
+      color: #5a7a5a;
+    }
+
+    .gallery-react__icon {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.55;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.72;
+      transition: opacity .15s, fill .15s;
+    }
+
+    .gallery-react.is-on .gallery-react__icon {
+      opacity: 1;
+      fill: rgba(158, 176, 146, 0.28);
+      stroke: #6a8a62;
+    }
+
+    .gallery-react__count {
+      font-size: 10px;
+      color: #9aaa9a;
+      font-weight: 400;
+      min-width: 0.8em;
+    }
+
+    .gallery-react.is-on .gallery-react__count { color: #5a7a5a; }
+
+    .gallery-comments {
+      margin-top: 8px;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height .35s ease, opacity .28s ease, margin-top .28s ease;
+    }
+
+    .gallery-comments.is-open {
+      max-height: 220px;
+      opacity: 1;
+      overflow-y: auto;
+    }
+
+    .gallery-comments__list {
+      list-style: none;
+      margin: 0 0 8px;
+      padding: 0;
+      max-height: 88px;
+      overflow-y: auto;
+    }
+
+    .gallery-comments__item {
+      font-size: 10px;
+      line-height: 1.45;
+      color: #5a6e5a;
+      padding: 5px 0;
+      border-bottom: 1px dashed #e0e8dc;
+    }
+
+    .gallery-comments__item:last-child { border-bottom: none; }
+
+    .gallery-comments__name {
+      font-weight: 500;
+      color: #4a6e4a;
+      margin-right: 4px;
+    }
+
+    .gallery-comments__empty {
+      font-size: 10px;
+      color: #aab8aa;
+      text-align: center;
+      padding: 4px 0 8px;
+      font-style: italic;
+    }
+
+    .gallery-comments__form {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .gallery-comments__form input,
+    .gallery-comments__form textarea {
+      width: 100%;
+      padding: 6px 8px;
+      font-size: 10px;
+      font-family: 'Noto Sans KR', sans-serif;
+      border: 1px solid #d8e4d4;
+      border-radius: 6px;
+      background: #fff;
+      color: #4a5a4a;
+      resize: none;
+    }
+
+    .gallery-comments__form textarea {
+      min-height: 44px;
+      line-height: 1.4;
+    }
+
+    .gallery-comments__form input:focus,
+    .gallery-comments__form textarea:focus {
+      outline: none;
+      border-color: #a0cc9a;
+    }
+
+    .gallery-comments__submit {
+      align-self: flex-end;
+      padding: 5px 12px;
+      font-size: 10px;
+      color: #fff;
+      background: #7aaa72;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .gallery-comments__submit:active { background: #6a9a62; }
 
     /* ─── PAGE 3: 웨딩 정보 ─────────────────────────────── */
     .page-info { justify-content: center; gap: 5px; padding: 0 4px; }
@@ -686,6 +855,171 @@
     document.addEventListener('keydown', e => {
       if (e.key === 'ArrowRight') changePage(1);
       if (e.key === 'ArrowLeft')  changePage(-1);
+    });
+
+    /* ── 갤러리 반응 · 댓글 (03~11번 사진) ── */
+    const GALLERY_STORAGE_KEY = 'wedding-gallery-social-v1';
+    const GALLERY_PHOTO_IDS = ['03','04','05','06','07','08','09','10','11'];
+
+    function loadGalleryState() {
+      try {
+        const raw = localStorage.getItem(GALLERY_STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveGalleryState(state) {
+      try {
+        localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(state));
+      } catch { /* quota exceeded 등 */ }
+    }
+
+    function defaultPhotoState() {
+      return { likes: 0, hearts: 0, liked: false, hearted: false, comments: [] };
+    }
+
+    function getPhotoState(state, photoId) {
+      if (!state[photoId]) state[photoId] = defaultPhotoState();
+      return state[photoId];
+    }
+
+    function createGallerySocial(photoId) {
+      const wrap = document.createElement('div');
+      wrap.className = 'gallery-social';
+      wrap.dataset.photo = photoId;
+      wrap.innerHTML = `
+        <div class="gallery-social__actions">
+          <button type="button" class="gallery-react" data-type="like" aria-pressed="false" aria-label="좋아요">
+            <svg class="gallery-react__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10v10M7 10l-1.5-4.5a2 2 0 0 1 1.9-2.6h.1a2.5 2.5 0 0 1 2.4 1.8L11 10h6.2a2 2 0 0 1 2 2.4l-1.2 6.2a2 2 0 0 1-2 1.6H10"/></svg>
+            <span class="gallery-react__count">0</span>
+          </button>
+          <button type="button" class="gallery-react" data-type="heart" aria-pressed="false" aria-label="하트">
+            <svg class="gallery-react__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.5s-6.5-4.2-8.5-8.2C2.2 9.2 4.2 6 7.5 6c1.8 0 3.2.9 4 2.2.8-1.3 2.2-2.2 4-2.2 3.3 0 5.3 3.2 3.5 6.3-2 4-8.5 8.2-8.5 8.2z"/></svg>
+            <span class="gallery-react__count">0</span>
+          </button>
+          <button type="button" class="gallery-react" data-type="comment" aria-expanded="false" aria-label="댓글">
+            <svg class="gallery-react__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.5h14a1.5 1.5 0 0 1 1.5 1.5v7a1.5 1.5 0 0 1-1.5 1.5H10l-4.5 3V8a1.5 1.5 0 0 1 1.5-1.5z"/></svg>
+            <span class="gallery-react__count">0</span>
+          </button>
+        </div>
+        <div class="gallery-comments" id="comments-${photoId}" hidden>
+          <ul class="gallery-comments__list"></ul>
+          <form class="gallery-comments__form">
+            <input type="text" name="name" placeholder="이름 (선택)" maxlength="20" autocomplete="name">
+            <textarea name="text" placeholder="축하 메시지를 남겨주세요" maxlength="200" required rows="2"></textarea>
+            <button type="submit" class="gallery-comments__submit">남기기</button>
+          </form>
+        </div>
+      `;
+
+      wrap.addEventListener('click', e => e.stopPropagation());
+      wrap.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
+      wrap.addEventListener('touchend', e => e.stopPropagation(), { passive: true });
+
+      const state = loadGalleryState();
+      renderGallerySocial(wrap, getPhotoState(state, photoId));
+
+      wrap.querySelectorAll('.gallery-react').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const type = btn.dataset.type;
+          const all = loadGalleryState();
+          const photo = getPhotoState(all, photoId);
+
+          if (type === 'like') {
+            photo.liked = !photo.liked;
+            photo.likes += photo.liked ? 1 : -1;
+          } else if (type === 'heart') {
+            photo.hearted = !photo.hearted;
+            photo.hearts += photo.hearted ? 1 : -1;
+          } else if (type === 'comment') {
+            const panel = wrap.querySelector('.gallery-comments');
+            const open = !panel.classList.contains('is-open');
+            panel.classList.toggle('is-open', open);
+            panel.hidden = !open;
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            if (open) panel.querySelector('textarea')?.focus();
+            saveGalleryState(all);
+            return;
+          }
+
+          saveGalleryState(all);
+          renderGallerySocial(wrap, photo);
+        });
+      });
+
+      wrap.querySelector('.gallery-comments__form').addEventListener('submit', e => {
+        e.preventDefault();
+        const form = e.target;
+        const name = form.name.value.trim() || '손님';
+        const text = form.text.value.trim();
+        if (!text) return;
+
+        const all = loadGalleryState();
+        const photo = getPhotoState(all, photoId);
+        photo.comments.push({
+          id: Date.now().toString(36),
+          name,
+          text,
+          at: new Date().toISOString()
+        });
+        saveGalleryState(all);
+        form.reset();
+        renderGallerySocial(wrap, photo);
+
+        const panel = wrap.querySelector('.gallery-comments');
+        panel.classList.add('is-open');
+        panel.hidden = false;
+        wrap.querySelector('[data-type="comment"]').setAttribute('aria-expanded', 'true');
+      });
+
+      return wrap;
+    }
+
+    function renderGallerySocial(wrap, photo) {
+      const likeBtn = wrap.querySelector('[data-type="like"]');
+      const heartBtn = wrap.querySelector('[data-type="heart"]');
+      const commentBtn = wrap.querySelector('[data-type="comment"]');
+
+      likeBtn.querySelector('.gallery-react__count').textContent = Math.max(0, photo.likes);
+      heartBtn.querySelector('.gallery-react__count').textContent = Math.max(0, photo.hearts);
+      commentBtn.querySelector('.gallery-react__count').textContent = photo.comments.length;
+
+      likeBtn.classList.toggle('is-on', photo.liked);
+      likeBtn.setAttribute('aria-pressed', photo.liked ? 'true' : 'false');
+      heartBtn.classList.toggle('is-on', photo.hearted);
+      heartBtn.setAttribute('aria-pressed', photo.hearted ? 'true' : 'false');
+
+      const list = wrap.querySelector('.gallery-comments__list');
+      list.innerHTML = '';
+      if (!photo.comments.length) {
+        const empty = document.createElement('li');
+        empty.className = 'gallery-comments__empty';
+        empty.textContent = '첫 댓글을 남겨보세요';
+        list.appendChild(empty);
+      } else {
+        [...photo.comments].reverse().forEach(c => {
+          const li = document.createElement('li');
+          li.className = 'gallery-comments__item';
+          li.innerHTML = `<span class="gallery-comments__name">${escapeHtml(c.name)}</span>${escapeHtml(c.text)}`;
+          list.appendChild(li);
+        });
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    GALLERY_PHOTO_IDS.forEach((photoId, i) => {
+      const page = document.getElementById('page-' + (i + 2));
+      const polaroid = page?.querySelector('.polaroid');
+      if (polaroid) polaroid.appendChild(createGallerySocial(photoId));
     });
   </script>
 </body>
