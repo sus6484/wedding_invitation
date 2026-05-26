@@ -477,6 +477,21 @@
 
     .gallery-comments__submit:active { background: #6a9a62; }
 
+    .gallery-comments__submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .gallery-social__status {
+      font-size: 9px;
+      color: #b0a090;
+      text-align: center;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .gallery-social.is-busy .gallery-react { pointer-events: none; opacity: 0.55; }
+
     /* ─── PAGE 3: 웨딩 정보 ─────────────────────────────── */
     .page-info { justify-content: center; gap: 5px; padding: 0 4px; }
 
@@ -764,6 +779,10 @@
     </div>
   </div><!-- /scene -->
 
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="firebase-config.js"></script>
 
   <script>
     /* ── 링 생성 ── */
@@ -857,38 +876,131 @@
       if (e.key === 'ArrowLeft')  changePage(-1);
     });
 
-    /* ── 갤러리 반응 · 댓글 (03~11번 사진) ── */
-    const GALLERY_STORAGE_KEY = 'wedding-gallery-social-v1';
+    /* ── 갤러리 반응 · 댓글 (Firebase — 모든 기기 공유) ── */
     const GALLERY_PHOTO_IDS = ['03','04','05','06','07','08','09','10','11'];
-
-    function loadGalleryState() {
-      try {
-        const raw = localStorage.getItem(GALLERY_STORAGE_KEY);
-        return raw ? JSON.parse(raw) : {};
-      } catch {
-        return {};
-      }
-    }
-
-    function saveGalleryState(state) {
-      try {
-        localStorage.setItem(GALLERY_STORAGE_KEY, JSON.stringify(state));
-      } catch { /* quota exceeded 등 */ }
-    }
+    const galleryWraps = new Map();
+    let galleryDb = null;
+    let galleryUid = null;
+    let galleryReady = false;
+    const galleryUnsubs = [];
 
     function defaultPhotoState() {
       return { likes: 0, hearts: 0, liked: false, hearted: false, comments: [] };
     }
 
-    function getPhotoState(state, photoId) {
-      if (!state[photoId]) state[photoId] = defaultPhotoState();
-      return state[photoId];
+    function isFirebaseConfigured() {
+      const c = window.FIREBASE_CONFIG;
+      if (!c || !c.apiKey || !c.projectId) return false;
+      return !String(c.apiKey).includes('YOUR_');
+    }
+
+    function galleryPhotoRef(photoId) {
+      return galleryDb.collection('gallery').doc(photoId);
+    }
+
+    async function initGalleryFirebase() {
+      if (!isFirebaseConfigured()) return false;
+      try {
+        if (!firebase.apps.length) firebase.initializeApp(window.FIREBASE_CONFIG);
+        galleryDb = firebase.firestore();
+        const cred = await firebase.auth().signInAnonymously();
+        galleryUid = cred.user.uid;
+        galleryReady = true;
+        return true;
+      } catch (err) {
+        console.error('Firebase init failed:', err);
+        return false;
+      }
+    }
+
+    function setGalleryStatus(wrap, message) {
+      let el = wrap.querySelector('.gallery-social__status');
+      if (!message) {
+        el?.remove();
+        return;
+      }
+      if (!el) {
+        el = document.createElement('p');
+        el.className = 'gallery-social__status';
+        wrap.appendChild(el);
+      }
+      el.textContent = message;
+    }
+
+    function subscribeGalleryPhoto(photoId, wrap) {
+      const state = defaultPhotoState();
+      wrap._galleryState = state;
+
+      const apply = () => renderGallerySocial(wrap, wrap._galleryState);
+
+      galleryUnsubs.push(
+        galleryPhotoRef(photoId).collection('likes').onSnapshot(snap => {
+          state.likes = snap.size;
+          state.liked = snap.docs.some(d => d.id === galleryUid);
+          apply();
+        }, err => console.error(err))
+      );
+
+      galleryUnsubs.push(
+        galleryPhotoRef(photoId).collection('hearts').onSnapshot(snap => {
+          state.hearts = snap.size;
+          state.hearted = snap.docs.some(d => d.id === galleryUid);
+          apply();
+        }, err => console.error(err))
+      );
+
+      galleryUnsubs.push(
+        galleryPhotoRef(photoId).collection('comments')
+          .orderBy('at', 'asc')
+          .onSnapshot(snap => {
+            state.comments = snap.docs.map(d => {
+              const data = d.data();
+              return {
+                id: d.id,
+                name: data.name || '손님',
+                text: data.text || '',
+                at: data.at
+              };
+            });
+            apply();
+          }, err => console.error(err))
+      );
+
+      apply();
+    }
+
+    async function toggleGalleryReaction(photoId, type) {
+      if (!galleryReady) return;
+      const col = type === 'like' ? 'likes' : 'hearts';
+      const ref = galleryPhotoRef(photoId).collection(col).doc(galleryUid);
+      const doc = await ref.get();
+      wrapSetBusy(photoId, true);
+      try {
+        if (doc.exists) await ref.delete();
+        else await ref.set({ at: firebase.firestore.FieldValue.serverTimestamp() });
+      } finally {
+        wrapSetBusy(photoId, false);
+      }
+    }
+
+    function wrapSetBusy(photoId, busy) {
+      const wrap = galleryWraps.get(photoId);
+      if (wrap) wrap.classList.toggle('is-busy', busy);
+    }
+
+    async function submitGalleryComment(photoId, name, text) {
+      await galleryPhotoRef(photoId).collection('comments').add({
+        name,
+        text,
+        at: firebase.firestore.FieldValue.serverTimestamp()
+      });
     }
 
     function createGallerySocial(photoId) {
       const wrap = document.createElement('div');
       wrap.className = 'gallery-social';
       wrap.dataset.photo = photoId;
+      wrap._galleryState = defaultPhotoState();
       wrap.innerHTML = `
         <div class="gallery-social__actions">
           <button type="button" class="gallery-react" data-type="like" aria-pressed="false" aria-label="좋아요">
@@ -918,62 +1030,54 @@
       wrap.addEventListener('touchstart', e => e.stopPropagation(), { passive: true });
       wrap.addEventListener('touchend', e => e.stopPropagation(), { passive: true });
 
-      const state = loadGalleryState();
-      renderGallerySocial(wrap, getPhotoState(state, photoId));
+      renderGallerySocial(wrap, wrap._galleryState);
 
       wrap.querySelectorAll('.gallery-react').forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', async () => {
           const type = btn.dataset.type;
-          const all = loadGalleryState();
-          const photo = getPhotoState(all, photoId);
 
-          if (type === 'like') {
-            photo.liked = !photo.liked;
-            photo.likes += photo.liked ? 1 : -1;
-          } else if (type === 'heart') {
-            photo.hearted = !photo.hearted;
-            photo.hearts += photo.hearted ? 1 : -1;
-          } else if (type === 'comment') {
+          if (type === 'comment') {
             const panel = wrap.querySelector('.gallery-comments');
             const open = !panel.classList.contains('is-open');
             panel.classList.toggle('is-open', open);
             panel.hidden = !open;
             btn.setAttribute('aria-expanded', open ? 'true' : 'false');
             if (open) panel.querySelector('textarea')?.focus();
-            saveGalleryState(all);
             return;
           }
 
-          saveGalleryState(all);
-          renderGallerySocial(wrap, photo);
+          if (!galleryReady) return;
+          await toggleGalleryReaction(photoId, type);
         });
       });
 
-      wrap.querySelector('.gallery-comments__form').addEventListener('submit', e => {
+      const form = wrap.querySelector('.gallery-comments__form');
+      form.addEventListener('submit', async e => {
         e.preventDefault();
-        const form = e.target;
+        if (!galleryReady) return;
+
         const name = form.name.value.trim() || '손님';
         const text = form.text.value.trim();
         if (!text) return;
 
-        const all = loadGalleryState();
-        const photo = getPhotoState(all, photoId);
-        photo.comments.push({
-          id: Date.now().toString(36),
-          name,
-          text,
-          at: new Date().toISOString()
-        });
-        saveGalleryState(all);
-        form.reset();
-        renderGallerySocial(wrap, photo);
-
-        const panel = wrap.querySelector('.gallery-comments');
-        panel.classList.add('is-open');
-        panel.hidden = false;
-        wrap.querySelector('[data-type="comment"]').setAttribute('aria-expanded', 'true');
+        const submitBtn = form.querySelector('.gallery-comments__submit');
+        submitBtn.disabled = true;
+        try {
+          await submitGalleryComment(photoId, name, text);
+          form.reset();
+          const panel = wrap.querySelector('.gallery-comments');
+          panel.classList.add('is-open');
+          panel.hidden = false;
+          wrap.querySelector('[data-type="comment"]').setAttribute('aria-expanded', 'true');
+        } catch (err) {
+          console.error(err);
+          setGalleryStatus(wrap, '전송에 실패했어요. 잠시 후 다시 시도해 주세요.');
+        } finally {
+          submitBtn.disabled = false;
+        }
       });
 
+      galleryWraps.set(photoId, wrap);
       return wrap;
     }
 
@@ -982,8 +1086,8 @@
       const heartBtn = wrap.querySelector('[data-type="heart"]');
       const commentBtn = wrap.querySelector('[data-type="comment"]');
 
-      likeBtn.querySelector('.gallery-react__count').textContent = Math.max(0, photo.likes);
-      heartBtn.querySelector('.gallery-react__count').textContent = Math.max(0, photo.hearts);
+      likeBtn.querySelector('.gallery-react__count').textContent = photo.likes;
+      heartBtn.querySelector('.gallery-react__count').textContent = photo.hearts;
       commentBtn.querySelector('.gallery-react__count').textContent = photo.comments.length;
 
       likeBtn.classList.toggle('is-on', photo.liked);
@@ -996,7 +1100,7 @@
       if (!photo.comments.length) {
         const empty = document.createElement('li');
         empty.className = 'gallery-comments__empty';
-        empty.textContent = '첫 댓글을 남겨보세요';
+        empty.textContent = galleryReady ? '첫 댓글을 남겨보세요' : '연결 중…';
         list.appendChild(empty);
       } else {
         [...photo.comments].reverse().forEach(c => {
@@ -1020,6 +1124,17 @@
       const page = document.getElementById('page-' + (i + 2));
       const polaroid = page?.querySelector('.polaroid');
       if (polaroid) polaroid.appendChild(createGallerySocial(photoId));
+    });
+
+    initGalleryFirebase().then(ok => {
+      if (ok) {
+        galleryWraps.forEach((wrap, photoId) => subscribeGalleryPhoto(photoId, wrap));
+        return;
+      }
+      const msg = isFirebaseConfigured()
+        ? '댓글을 불러오지 못했어요. 새로고침해 주세요.'
+        : 'firebase-config.js 설정이 필요해요.';
+      galleryWraps.forEach(wrap => setGalleryStatus(wrap, msg));
     });
   </script>
 </body>
