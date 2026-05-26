@@ -49,13 +49,17 @@
     .scene {
       position: relative;
       display: flex; flex-direction: column;
-      align-items: center;
+      align-items: flex-end;
+      width: 100%;
+      max-width: 100vw;
+      padding: clamp(10px, 2.5vh, 28px) clamp(14px, 5vw, 36px) 0 0;
       z-index: 10;
     }
 
-    /* ─── 다이어리 래퍼 (기울기) ─────────────────────────── */
+    /* ─── 다이어리 래퍼 (기울기·플랫레이 구도) ───────────── */
     .diary-wrapper {
-      transform: rotate(-3.5deg);
+      transform: rotate(-15deg);
+      transform-origin: 26px 50%;
       position: relative;
       /* 링 너비만큼 왼쪽 공간 확보 */
       margin-left: 28px;
@@ -112,8 +116,8 @@
     /* ─── 다이어리 본체 ──────────────────────────────────── */
     .diary {
       position: relative;
-      width: min(82vw, 320px);
-      height: min(72vh, 480px);
+      width: min(88vw, 352px);
+      height: min(78vh, 528px);
       background: #fffef9;
       border-radius: 3px 12px 12px 3px;
 
@@ -264,7 +268,7 @@
     .page-photo .page-eyebrow {
       position: absolute;
       top: 6px;
-      left: 0;
+      left: 14px;
       margin-bottom: 0;
     }
 
@@ -361,8 +365,8 @@
     .nav-area {
       display: flex; gap: 14px;
       margin-top: 18px;
-      /* 다이어리 기울기에 반대 방향으로 살짝 보정 */
-      transform: rotate(-3.5deg);
+      transform: rotate(-15deg);
+      transform-origin: right center;
     }
 
     .nav-btn {
@@ -393,7 +397,7 @@
 
   <!-- ───────── 배경 스티커 ───────── -->
   <span class="bg-deco" style="top:7%;left:4%;transform:rotate(-18deg);">🫧</span>
-  <span class="bg-deco" style="top:11%;right:5%;transform:rotate(12deg);">⭐</span>
+  <span class="bg-deco" style="top:4%;right:6%;transform:rotate(12deg);">❤️</span>
   <span class="bg-deco" style="top:40%;left:3%;transform:rotate(6deg);">🎀</span>
   <span class="bg-deco" style="bottom:22%;left:5%;transform:rotate(-8deg);">🌿</span>
   <span class="bg-deco" style="bottom:14%;right:6%;transform:rotate(22deg);">✨</span>
@@ -426,20 +430,20 @@
           <!-- ── PAGE 1: 커버 ── -->
           <div class="page page-cover active" id="page-0">
             <div class="cover-image-wrap">
-              <img src="image/01.jpg" alt="웨딩 초대" class="cover-image">
+              <img src="image/01.png" alt="웨딩 초대" class="cover-image">
             </div>
           </div>
 
           <!-- ── PAGE 2: 웨딩 정보 (이미지) ── -->
           <div class="page page-cover" id="page-1">
             <div class="cover-image-wrap">
-              <img src="image/02.jpg" alt="웨딩 정보" class="cover-image">
+              <img src="image/02.png" alt="웨딩 정보" class="cover-image">
             </div>
           </div>
 
           <!-- ── PAGE 3~11: 사진 (폴라로이드 9장) ── -->
           <div class="page page-photo" id="page-2">
-            <div class="page-eyebrow">Our Memory 📷</div>
+            <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
               <div class="polaroid-tape"></div>
               <div class="polaroid-img">
@@ -448,6 +452,7 @@
             </div>
           </div>
           <div class="page page-photo" id="page-3">
+            <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
               <div class="polaroid-tape"></div>
               <div class="polaroid-img">
@@ -456,6 +461,7 @@
             </div>
           </div>
           <div class="page page-photo" id="page-4">
+            <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
               <div class="polaroid-tape"></div>
               <div class="polaroid-img">
@@ -464,6 +470,7 @@
             </div>
           </div>
           <div class="page page-photo" id="page-5">
+            <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
               <div class="polaroid-tape"></div>
               <div class="polaroid-img">
@@ -472,6 +479,7 @@
             </div>
           </div>
           <div class="page page-photo" id="page-6">
+            <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
               <div class="polaroid-tape"></div>
               <div class="polaroid-img">
@@ -480,6 +488,7 @@
             </div>
           </div>
           <div class="page page-photo" id="page-7">
+            <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
               <div class="polaroid-tape"></div>
               <div class="polaroid-img">
@@ -488,6 +497,7 @@
             </div>
           </div>
           <div class="page page-photo" id="page-8">
+            <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
               <div class="polaroid-tape"></div>
               <div class="polaroid-img">
@@ -496,6 +506,7 @@
             </div>
           </div>
           <div class="page page-photo" id="page-9">
+            <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
               <div class="polaroid-tape"></div>
               <div class="polaroid-img">
@@ -504,6 +515,7 @@
             </div>
           </div>
           <div class="page page-photo" id="page-10">
+            <div class="page-eyebrow">Gallery</div>
             <div class="polaroid">
               <div class="polaroid-tape"></div>
               <div class="polaroid-img">
