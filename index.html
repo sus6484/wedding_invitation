@@ -12,7 +12,7 @@
     html, body {
       width: 100%; height: 100%;
       overflow: hidden;
-      touch-action: none;
+      touch-action: manipulation;
     }
 
     /* ─── 세이지 깅엄 + 핑크 별 배경 (CSS 생성) ───────── */
@@ -278,6 +278,106 @@
       display: block;
     }
 
+    .cover-image-wrap--info {
+      position: relative;
+    }
+
+    /* 이미지 실제 렌더 크기에 맞춰 오버레이 정렬 */
+    .cover-image-frame {
+      position: relative;
+      aspect-ratio: 1180 / 1747;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      line-height: 0;
+    }
+
+    .cover-image-frame .cover-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .vibe-link-btn {
+      position: absolute;
+      left: 50%;
+      bottom: 6%;
+      transform: translateX(-50%);
+      z-index: 7;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: rgba(255, 255, 250, 0.92);
+      border: 1px solid #a0cc9a;
+      border-radius: 14px;
+      padding: 4px 10px;
+      font-size: 9px;
+      color: #5a7a5a;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 1px 2px 6px rgba(0,0,0,0.1);
+      backdrop-filter: blur(4px);
+      transition: background .18s, transform .18s;
+      white-space: nowrap;
+      touch-action: manipulation;
+      pointer-events: auto;
+    }
+
+    .vibe-link-btn__icon {
+      flex-shrink: 0;
+      width: 11px;
+      height: 11px;
+      fill: #6aaa6a;
+    }
+
+    .vibe-link-btn:active {
+      background: #e0f0dc;
+      transform: translateX(-50%) translateY(-1px);
+    }
+
+    .map-link-btn {
+      position: absolute;
+      left: 50%;
+      top: 24%;
+      transform: translateX(-50%);
+      z-index: 7;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: rgba(255, 255, 250, 0.94);
+      border: 1px solid #a0cc9a;
+      border-radius: 14px;
+      padding: 4px 10px;
+      font-size: 9px;
+      color: #5a7a5a;
+      font-family: 'Noto Sans KR', sans-serif;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      box-shadow: 1px 2px 6px rgba(0,0,0,0.1);
+      backdrop-filter: blur(4px);
+      transition: background .18s, transform .18s;
+      white-space: nowrap;
+      touch-action: manipulation;
+      pointer-events: auto;
+    }
+
+    .map-link-btn__icon {
+      flex-shrink: 0;
+      width: 11px;
+      height: 11px;
+      fill: #6aaa6a;
+    }
+
+    .map-link-btn:active {
+      background: #e0f0dc;
+      transform: translateX(-50%) translateY(-1px);
+    }
+
     /* ─── PAGE 3: 사진 ───────────────────────────────────── */
     .page-photo {
       justify-content: center;
@@ -491,8 +591,33 @@
 
           <!-- ── PAGE 2: 웨딩 정보 (이미지) ── -->
           <div class="page page-cover" id="page-1">
-            <div class="cover-image-wrap">
-              <img src="image/02.png" alt="웨딩 정보" class="cover-image">
+            <div class="cover-image-wrap cover-image-wrap--info">
+              <div class="cover-image-frame">
+                <img src="image/02.png" alt="웨딩 정보" class="cover-image">
+                <a
+                  class="map-link-btn"
+                  id="mapLinkBtn"
+                  href="https://map.naver.com/p/search/%EC%9B%94%EB%B0%B0%EA%B5%AD%EB%AF%BC%EC%B2%B4%EC%9C%A1%EC%84%BC%ED%84%B0/place/36913993?placePath=%2Fhome%3FabtExp%3DNEW-PLACE-SEARCH%3A2%26bk_query%3D%EC%9B%94%EB%B0%B0%EA%B5%AD%EB%AF%BC%EC%B2%B4%EC%9C%A1%EC%84%BC%ED%84%B0%26entry%3Dpll%26from%3Dnx%26fromNxList%3Dtrue%26from%3Dmap%26fromPanelNum%3D2%26timestamp%3D202606261417%26locale%3Dko%26svcName%3Dmap_pcv5%26searchText%3D%EC%9B%94%EB%B0%B0%EA%B5%AD%EB%AF%BC%EC%B2%B4%EC%9C%A1%EC%84%BC%ED%84%B0&placeSearchOption=abtExp%3DNEW-PLACE-SEARCH%253A2%26bk_query%3D%25EC%259B%2594%25EB%25B0%25B0%25EA%25B5%25AD%25EB%25AF%25BC%25EC%25B2%25B4%25EC%259C%25A1%25EC%2584%25BC%25ED%2584%25B0%26entry%3Dpll%26fromNxList%3Dtrue%26originalQuery%3D%25EC%259B%2594%25EB%25B0%25B0%25EA%25B5%25AD%25EB%25AF%25BC%25EC%25B2%25B4%25EC%259C%25A1%25EC%2584%25BC%25ED%2584%25B0%26x%3D128.459816%26y%3D35.693930&searchType=place&c=15.00,0,0,0,dh"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg class="map-link-btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                  </svg>
+                  지도 보기
+                </a>
+                <a
+                  class="vibe-link-btn"
+                  href="https://www.youtube.com/watch?v=X-CZzvp7vgE"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg class="vibe-link-btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                  영상 보기
+                </a>
+              </div>
             </div>
           </div>
 
@@ -609,13 +734,40 @@
     /* ── 링 생성 ── */
     (function() {
       const rings = document.getElementById('rings');
-      const diary = document.getElementById('diary');
       const n = 9;
       for (let i = 0; i < n; i++) {
         const r = document.createElement('div');
         r.className = 'ring';
         rings.appendChild(r);
       }
+    })();
+
+    /* ── 정보 이미지 위 버튼 맞춤 ── */
+    function syncInfoFrameSize() {
+      const frame = document.querySelector('.cover-image-frame');
+      const img = frame?.querySelector('img');
+      if (!frame || !img || !img.clientWidth || !img.clientHeight) return;
+      frame.style.width = img.clientWidth + 'px';
+      frame.style.height = img.clientHeight + 'px';
+    }
+
+    (function() {
+      const img = document.querySelector('.cover-image-frame img');
+      if (!img) return;
+
+      if (img.complete) syncInfoFrameSize();
+      else img.addEventListener('load', syncInfoFrameSize, { once: true });
+
+      window.addEventListener('resize', syncInfoFrameSize);
+      if (typeof ResizeObserver !== 'undefined') {
+        new ResizeObserver(syncInfoFrameSize).observe(img);
+      }
+
+      document.getElementById('mapLinkBtn')?.addEventListener('click', function(e) {
+        e.stopPropagation();
+        window.open(this.href, '_blank', 'noopener,noreferrer');
+        e.preventDefault();
+      });
     })();
 
     /* ── 페이지 전환 ── */
@@ -653,6 +805,7 @@
         $next.style.pointerEvents = 'auto';
         cur = next;
         updateUI();
+        if (next === 1) requestAnimationFrame(syncInfoFrameSize);
         busy = false;
       }, 440);
     }
@@ -676,15 +829,18 @@
     }
 
     /* ── 스와이프 지원 ── */
-    let tx = 0, ty = 0;
+    let tx = 0, ty = 0, swipeBlocked = false;
     const diary = document.getElementById('diary');
 
     diary.addEventListener('touchstart', e => {
+      swipeBlocked = !!e.target.closest('a');
+      if (swipeBlocked) return;
       tx = e.touches[0].clientX;
       ty = e.touches[0].clientY;
     }, { passive: true });
 
     diary.addEventListener('touchend', e => {
+      if (swipeBlocked) return;
       const dx = e.changedTouches[0].clientX - tx;
       const dy = e.changedTouches[0].clientY - ty;
       if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 38)
